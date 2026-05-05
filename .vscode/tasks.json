@@ -1,0 +1,79 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "构建 CPython (debug)",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-j",
+                "$(nproc)"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "重新配置并构建 (clean build)",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "dependsOn": [
+                "构建 CPython (debug)"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "仅编译已修改文件",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-j",
+                "$(nproc)"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "运行测试",
+            "type": "shell",
+            "command": "./python",
+            "args": [
+                "-m",
+                "test",
+                "-j",
+                "$(nproc)"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        }
+    ]
+}
