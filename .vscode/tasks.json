@@ -1,0 +1,70 @@
+{
+    // out-of-tree 构建：make 在 build/ 目录里执行；并行数用 macOS 的 sysctl -n hw.ncpu。
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "构建 CPython (debug)",
+            "type": "shell",
+            "command": "make -j$(sysctl -n hw.ncpu)",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "清理后重新构建 (clean build)",
+            "type": "shell",
+            "command": "make clean && make -j$(sysctl -n hw.ncpu)",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "重新生成 compile_commands.json (bear)",
+            "type": "shell",
+            "command": "make clean && bear -- make -j$(sysctl -n hw.ncpu)",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "运行测试",
+            "type": "shell",
+            "command": "./build/python -m test -j$(sysctl -n hw.ncpu)",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

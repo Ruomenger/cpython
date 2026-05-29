@@ -1,0 +1,49 @@
+{
+    // macOS（Apple Silicon）调试配置。
+    // 前 3 个用 CodeLLDB 扩展（vadimcn.vscode-lldb），arm64 上最稳定，推荐安装。
+    // 最后 1 个是给 Microsoft C/C++ 扩展（cppdbg + lldb）的备用方案。
+    // 二进制为 out-of-tree 构建产物 build/python；build/python 会自动定位 Lib/ 与扩展，无需 PYTHONPATH。
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(lldb) 调试当前文件",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/python",
+            "args": [
+                "${file}"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "(lldb) 交互式解释器",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/python",
+            "args": [
+                "-i"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "(lldb) 附加到进程",
+            "type": "lldb",
+            "request": "attach",
+            "program": "${workspaceFolder}/build/python",
+            "pid": "${command:pickProcess}"
+        },
+        {
+            "name": "(cppdbg/lldb) 调试当前文件 — MS C/C++ 扩展备用",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/python",
+            "args": [
+                "${file}"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "MIMode": "lldb",
+            "externalConsole": false
+        }
+    ]
+}
