@@ -6,6 +6,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(lldb) 调试 python -c <输入代码>",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/python",
+            "args": [
+                "-c",
+                "${input:pyCode}"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
             "name": "(lldb) 调试当前文件",
             "type": "lldb",
             "request": "launch",
@@ -44,6 +55,15 @@
             "cwd": "${workspaceFolder}",
             "MIMode": "lldb",
             "externalConsole": false
+        }
+    ],
+    // inputs：启动「调试 python -c <输入代码>」时弹框，输入的内容替换掉 args 里的 ${input:pyCode}。
+    "inputs": [
+        {
+            "id": "pyCode",
+            "type": "promptString",
+            "description": "要传给 python -c 的代码",
+            "default": "1+2"
         }
     ]
 }
