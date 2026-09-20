@@ -38,5 +38,6 @@
         "--limit-references=1000",
         "--limit-results=300",
         "--pch-storage=memory"
-    ]
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:system"
 }
