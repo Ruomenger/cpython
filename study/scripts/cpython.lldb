@@ -1,0 +1,15 @@
+# 调试 CPython 解释器时用的 lldb 辅助命令。
+#
+# VSCode 里的调试配置会自动加载(见 .vscode/settings.json 的 lldb.launch.initCommands)。
+# 命令行里:
+#   lldb -s study/scripts/cpython.lldb build/python
+#
+# 两个命令都是在被调试进程里调用解释器自带的调试函数,输出走它的 stderr
+# (VSCode 里在「终端」面板,不在「调试控制台」)。
+# pyo 会执行对象的 repr,可能运行 Python 代码;在意现场不被扰动时不要用。
+
+# pyo <表达式>:打印一个 PyObject* 的地址、引用计数、类型和 repr
+command regex pyo 's/(.+)/expression -- (void)_PyObject_Dump((PyObject *)(%1))/'
+
+# pybt:打印当前线程的 Python 调用栈
+command regex pybt 's/^$/expression -- (void)_Py_DumpTraceback(2, (PyThreadState *)_PyThreadState_UncheckedGet())/'

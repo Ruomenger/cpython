@@ -1,0 +1,47 @@
+{
+    // ---- C 代码索引:clangd ----
+    // 编译数据库是 build/compile_commands.json(study/scripts/rebuild.sh 生成);
+    // 不自包含的头文件靠仓库根的 .clangd 补编译参数。
+    "clangd.path": "/opt/homebrew/opt/llvm/bin/clangd",
+    "clangd.arguments": [
+        "--compile-commands-dir=${workspaceFolder}/build",
+        // 以读源码为主:补全时不要自动插入 #include
+        "--header-insertion=never",
+        // 查引用不截断。默认上限 1000,Py_INCREF、PyObject 这类符号会被截掉大半
+        "--limit-references=0"
+    ],
+    // 本机还装着 Microsoft C/C++ 扩展,关掉它的 IntelliSense,避免和 clangd 重复报错
+    "C_Cpp.intelliSenseEngine": "disabled",
+
+    // ---- 调试:CodeLLDB ----
+    // 所有调试配置都加载 pyo / pybt 两个辅助命令
+    "lldb.launch.initCommands": [
+        "command source ${workspaceFolder}/study/scripts/cpython.lldb"
+    ],
+    // 监视和调试控制台里按 C 表达式求值,可以直接写强制转换和函数调用,
+    // 例如 ((PyTypeObject *)op->ob_type)->tp_name
+    "lldb.launch.expressions": "native",
+
+    // ---- 文件显示 ----
+    // build/ 保持可见:里面有只在构建时才生成的源码
+    // (build/Python/deepfreeze/deepfreeze.c、build/Python/frozen_modules/*.h、build/pyconfig.h、build/Makefile)
+    "files.exclude": {
+        "**/*.o": true,
+        "**/*.pyc": true,
+        "**/__pycache__": true,
+        "build/build": true
+    },
+    // 搜索跳过 build/,否则生成的代码和构建日志会淹没结果
+    "search.exclude": {
+        "build": true
+    },
+    "files.associations": {
+        "*.h": "c",
+        "pyconfig.h.in": "c",
+        "Makefile.pre": "makefile",
+        "Makefile.pre.in": "makefile"
+    },
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "python-envs.defaultEnvManager": "ms-python.python:system"
+}

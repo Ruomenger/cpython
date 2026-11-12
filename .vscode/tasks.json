@@ -1,0 +1,64 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            // 改了 C 代码后用。⇧⌘B 默认跑这个。
+            "label": "增量构建",
+            "type": "shell",
+            // Makefile 编译时会读环境里的 CPPFLAGS / LDFLAGS,清掉以便和全量重建用同一套参数。
+            "command": "env -u CFLAGS -u CPPFLAGS -u LDFLAGS make -j$(sysctl -n hw.ncpu)",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            // 编译器报的路径相对 build/(如 ../Python/ceval.c),要告诉「问题」面板从哪里算起。
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": ["autoDetect", "${workspaceFolder}/build"]
+            }
+        },
+        {
+            // rebase 到新标签、升级了工具链、或者要刷新编译数据库时用。几分钟。
+            "label": "全量重建(configure + 编译 + 编译数据库)",
+            "type": "shell",
+            "command": "${workspaceFolder}/study/scripts/rebuild.sh",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "运行测试",
+            "type": "shell",
+            "command": "./build/python -m test ${input:testArgs}",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "testArgs",
+            "type": "promptString",
+            "description": "传给 python -m test 的参数:测试名,可以带 -v、-m <用例名模式> 等",
+            "default": "test_dis"
+        }
+    ]
+}

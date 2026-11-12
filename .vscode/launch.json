@@ -1,0 +1,52 @@
+{
+    // CodeLLDB(vadimcn.vscode-lldb)的调试配置。被调试的是树外构建的 build/python,
+    // 它自己能找到 Lib/ 和扩展模块,不需要设 PYTHONPATH。
+    //
+    // 启动前不会自动编译:改过 C 代码先跑「增量构建」任务(⇧⌘B)。
+    // 调试控制台里可以用 pyo <表达式> 和 pybt(见 study/scripts/cpython.lldb)。
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // 最常用:断点打在 C 代码里,跑一小段 Python 看它怎么被执行。
+            "name": "python -c <输入代码>",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/python",
+            "args": ["-c", "${input:pyCode}"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            // 焦点要在 .py 文件上;焦点在 .c 文件时它会把 C 源码当脚本跑。
+            "name": "python <当前打开的 .py 文件>",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/python",
+            "args": ["${file}"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "python 交互式解释器",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/python",
+            "args": ["-i"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "附加到正在运行的 build/python",
+            "type": "lldb",
+            "request": "attach",
+            "program": "${workspaceFolder}/build/python",
+            "pid": "${command:pickProcess}"
+        }
+    ],
+    // 启动「python -c <输入代码>」时弹输入框,内容替换 args 里的 ${input:pyCode}。
+    "inputs": [
+        {
+            "id": "pyCode",
+            "type": "promptString",
+            "description": "传给 python -c 的代码",
+            "default": "print(1 + 2)"
+        }
+    ]
+}

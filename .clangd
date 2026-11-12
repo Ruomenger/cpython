@@ -1,0 +1,8 @@
+# CPython 的内部头文件和 Argument Clinic 生成的头文件都不自包含:
+# 它们默认调用方已经 #include "Python.h"。单独打开时 clangd 会报一屏 unknown type,
+# 悬停和跳转也跟着失效。这里让 clangd 解析这两类文件之前先包含 Python.h,
+# 并带上内部头文件要求的 Py_BUILD_CORE。
+If:
+  PathMatch: [Include/internal/.*\.h, .*/clinic/.*\.h]
+CompileFlags:
+  Add: [-include, Python.h, -DPy_BUILD_CORE]
